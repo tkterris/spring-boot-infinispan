@@ -18,6 +18,7 @@ package sample.data.rest.service;
 
 import sample.data.rest.domain.City;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -27,10 +28,12 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource(collectionResourceRel = "cities", path = "cities")
 interface CityRepository extends PagingAndSortingRepository<City, Long> {
 
+	@Cacheable("citySearch")
 	Page<City> findByNameContainingAndCountryContainingAllIgnoringCase(
 			@Param("name") String name, @Param("country") String country,
 			Pageable pageable);
 
+	@Cacheable("singleCity")
 	City findByNameAndCountryAllIgnoringCase(@Param("name") String name,
 			@Param("country") String country);
 
