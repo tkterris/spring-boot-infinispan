@@ -41,6 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CityRepositoryCacheIntegrationTests {
 	
 	private static final String CITY_SEARCH_CACHE = "citySearch";
+	
+	private static final String SINGLE_CITY_CACHE = "singleCity";
 
 	@Autowired
 	CityRepository repository;
@@ -49,7 +51,7 @@ public class CityRepositoryCacheIntegrationTests {
 	private CacheManager cacheManager;
 
 	@Test
-	public void findContaining() {
+	public void searchCacheUsed() {
 		Cache citySearchCache = cacheManager.getCache(CITY_SEARCH_CACHE);
 		citySearchCache.clear();
 		Page<City> cities = this.repository
@@ -57,5 +59,19 @@ public class CityRepositoryCacheIntegrationTests {
 						new PageRequest(0, 10));
 		assertThat(cities.getTotalElements()).isEqualTo(3L);
 		assertThat(((org.infinispan.Cache<?, ?>)citySearchCache.getNativeCache()).size()).isGreaterThan(0);
+	}
+
+	@Test
+	public void singleCityCacheEviction() {
+		Cache singleCityCache = cacheManager.getCache(SINGLE_CITY_CACHE);
+		singleCityCache.clear();
+		this.repository.findByNameAndCountryAllIgnoringCase("Brisbane", "Australia");
+		this.repository.findByNameAndCountryAllIgnoringCase("Melbourne", "Australia");
+		this.repository.findByNameAndCountryAllIgnoringCase("Sydney", "Australia");
+		this.repository.findByNameAndCountryAllIgnoringCase("Montreal", "Canada");
+		this.repository.findByNameAndCountryAllIgnoringCase("Tel Aviv", "Israel");
+		this.repository.findByNameAndCountryAllIgnoringCase("Tokyo", "Japan");
+		assertThat(((org.infinispan.Cache<?, ?>)singleCityCache.getNativeCache()).size()).isGreaterThan(0);
+		assertThat(((org.infinispan.Cache<?, ?>)singleCityCache.getNativeCache()).size()).isLessThanOrEqualTo(5);
 	}
 }
