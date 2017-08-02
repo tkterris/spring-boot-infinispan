@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.3.RELEASE</version>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.3.RELEASE</version>
 	</parent>
 	<artifactId>spring-boot-sample-data-rest</artifactId>
 	<name>Spring Boot Data REST Sample</name>
@@ -14,6 +14,10 @@
 		<name>Pivotal Software, Inc.</name>
 		<url>http://www.spring.io</url>
 	</organization>
+	<properties>
+		<infinispan.version>8.2.5.Final</infinispan.version>
+		<infinispan.spring.version>1.0.0</infinispan.spring.version>
+	</properties>
 	<dependencies>
 		<!-- Compile -->
 		<dependency>
@@ -37,6 +41,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-spring4-embedded</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-jcache</artifactId>
 		</dependency>
 		<!-- Runtime -->
 		<dependency>
