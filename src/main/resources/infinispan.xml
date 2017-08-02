@@ -12,9 +12,24 @@
 	<cache-container default-cache="singleCity">
 		<transport stack="external-file" />
 		<jmx duplicate-domains="true" />
+		<!-- In this cache, data rarely changes, so we only have eviction
+		configured at a maximum number of entries to ensure OOM exceptions 
+		don't occur -->
 		<replicated-cache name="singleCity" mode="ASYNC">
-			<eviction strategy="LIRS" max-entries="2" />
+			<eviction strategy="LIRS" max-entries="5" />
 		</replicated-cache>
+		<!-- In this cache, data changes infrequently, so we have a longer
+		expiration timeout -->
+		<distributed-cache name="singleHotel" mode="ASYNC" owners="2">
+			<expiration lifespan="10000" />
+		</distributed-cache>
+		<!-- In this cache, the expiration time is very small, since search
+		results are more ephemeral -->
+		<!-- We've also reduced the number of owners, since we don't want the 
+		large amount of data replicated to multiple notes. -->
+		<distributed-cache name="citySearch" mode="ASYNC" owners="1">
+			<expiration lifespan="5000" />
+		</distributed-cache>
 	</cache-container>
 
 </infinispan>
