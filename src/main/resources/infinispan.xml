@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <infinispan
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="urn:infinispan:config:7.0 http://www.infinispan.org/schemas/infinispan-config-7.0.xsd"
-        xmlns="urn:infinispan:config:7.0">
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="urn:infinispan:config:7.0 http://www.infinispan.org/schemas/infinispan-config-7.0.xsd"
+		xmlns="urn:infinispan:config:7.0">
 
-   <cache-container default-cache="singleCity">
-       <local-cache name="singleCity">
-          <eviction strategy="LIRS" max-entries="2" />
-       </local-cache>
-   </cache-container>
+	<!-- Clustering configuration -->
+	<jgroups>
+		<stack-file name="external-file" path="jgroups.xml"/>
+	</jgroups>
+
+	<cache-container default-cache="singleCity">
+		<transport stack="external-file" />
+		<jmx duplicate-domains="true" />
+		<replicated-cache name="singleCity" mode="ASYNC">
+			<eviction strategy="LIRS" max-entries="2" />
+		</replicated-cache>
+	</cache-container>
 
 </infinispan>
